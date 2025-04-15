@@ -1,24 +1,24 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import Image from 'next/image'; //imports the Image which is a nextjs built in component for optimize image rendering 
+import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons'; //imports the updateInvoice button and the deleteInvoice button
+import InvoiceStatus from '@/app/ui/invoices/status'; //imports the invoiceStatus component which shows the status of the invoices
+import { formatDateToLocal, formatCurrency } from '@/app/lib/utils'; //imports two utility functions for date and currency formatting, probably like angular pipes
+import { fetchFilteredInvoices } from '@/app/lib/data'; //imports the fecthFilteredInvoices which is a fetching method that gets the filtered invoices  
 
-export default async function InvoicesTable({
-  query,
+export default async function InvoicesTable({ //this is the component, it has two props: query and current page, they are not optional
+  query, 
   currentPage,
 }: {
-  query: string;
-  currentPage: number;
+  query: string;  //the query must be a string
+  currentPage: number; //the current page must be a string
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const invoices = await fetchFilteredInvoices(query, currentPage); //Declares a const that holds whatever the asynchronous fetchichng method returns, in this case it probably is the filtered invoices
 
-  return (
-    <div className="mt-6 flow-root">
+  return ( //this is what what the component returns
+    <div className="mt-6 flow-root"> 
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {invoices?.map((invoice) => (
+          <div className="md:hidden"> 
+            {invoices?.map((invoice) => ( //it iterates over the invoices array for each of them it renders something
               <div
                 key={invoice.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -26,7 +26,7 @@ export default async function InvoicesTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <Image
+                      <Image //This is the NextJs built in Image component which defenetely renders the profile picture image
                         src={invoice.image_url}
                         className="mr-2 rounded-full"
                         width={28}
@@ -42,19 +42,19 @@ export default async function InvoicesTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
+                      {formatCurrency(invoice.amount)} {/* Formats the amount of the invoice in a user friendly way */}
                     </p>
-                    <p>{formatDateToLocal(invoice.date)}</p>
+                    <p>{formatDateToLocal(invoice.date)}</p> {/* Formats the date of the invoice in a user friendly way */}
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateInvoice id={invoice.id} /> {/* This is the updateInvoice button component which is a link button*/}
+                    <DeleteInvoice id={invoice.id} /> {/* This is the deleteInvoice button component which is al ink button*/}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+          <table className="hidden min-w-full text-gray-900 md:table"> 
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
@@ -78,7 +78,7 @@ export default async function InvoicesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {invoices?.map((invoice) => ( //The following code is the same one as the one used for the mobile version, it only changes stylistically
                 <tr
                   key={invoice.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"

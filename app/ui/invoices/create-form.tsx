@@ -1,16 +1,23 @@
-import { CustomerField } from '@/app/lib/definitions';
-import Link from 'next/link';
-import {
+'use client'
+
+import { useActionState } from 'react';
+
+import { CustomerField } from '@/app/lib/definitions';  //imports the customer field interface I guess
+import Link from 'next/link'; // imports the link component, which is a built in component of next
+import { //imports some interfaces
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import { Button } from '@/app/ui/button';
+} from '@heroicons/react/24/outline'; //imports icons
+import { Button } from '@/app/ui/button'; //imports a button icon
+import { createInvoice, State } from '@/app/lib/actions'; //imports the createInvoice Method
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form({ customers }: { customers: CustomerField[] }) { //this is the form component, it accepts a prop which is an array of of CustomerField objects
+  const initialState: State = { message: null, errors: {} }
+  const [state, formAction] = useActionState(createInvoice, initialState)
   return (
-    <form>
+    <form action={formAction}> 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -45,8 +52,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
+                id="amount" 
+                name="amount" 
                 type="number"
                 step="0.01"
                 placeholder="Enter USD amount"

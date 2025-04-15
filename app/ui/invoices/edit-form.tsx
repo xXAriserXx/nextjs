@@ -1,24 +1,27 @@
-'use client';
+'use client'; //this is a client component
 
-import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { CustomerField, InvoiceForm } from '@/app/lib/definitions'; //here I import some interfaces or definitions 
 import {
-  CheckIcon,
+  CheckIcon, 
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
+} from '@heroicons/react/24/outline'; //here I import icons 
+import Link from 'next/link'; //here I import the nextJs link component
+import { Button } from '@/app/ui/button'; //here I import a button
+import { updateInvoice } from '@/app/lib/actions'; //here I import the update method from the server actions
 
-export default function EditInvoiceForm({
-  invoice,
+export default function EditInvoiceForm({ //this is the component itself
+  invoice, //two props: invoice and customers    
   customers,
 }: {
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id) //So the updateInvoice action expects an id so we bind it here, it it added to the form data
+  console.log(invoice)
   return (
-    <form>
+    <form action={updateInvoiceWithId} className='border border-red-500'>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -35,12 +38,12 @@ export default function EditInvoiceForm({
               <option value="" disabled>
                 Select a customer
               </option>
-              {customers.map((customer) => (
+              {customers.map((customer) => ( //iterates over the customers array and shows the relative options
                 <option key={customer.id} value={customer.id}>
                   {customer.name}
                 </option>
               ))}
-            </select>
+            </select> 
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
@@ -116,7 +119,7 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Edit Invoice</Button>
+        <Button type="submit">Edit Invoice</Button> 
       </div>
     </form>
   );

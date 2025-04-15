@@ -1,5 +1,5 @@
-import postgres from 'postgres';
-import {
+import postgres from 'postgres'; //Imports the postgress library which is a nodejs library used to interact with a postgresSql database
+import { //Imports the some interfaces 
   CustomerField,
   CustomersTableType,
   InvoiceForm,
@@ -7,17 +7,19 @@ import {
   LatestInvoiceRaw,
   Revenue,
 } from './definitions';
-import { formatCurrency } from './utils';
+import { formatCurrency } from './utils'; //Imports a utility tool that formats currency in a user friendly way
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' }); //creates a client instance allowing communication with the database
 
-export async function fetchRevenue() {
+//process.env.POSTGRES_URL gets the secret connection URL to access the database, ! is used to clarify that the connection URL defenitely exists
+//the ssl require option ensures that the conneciton to the database uses Secure Sockets Layer 
+
+export async function fetchRevenue() { // This is an asynchronous function that retrieves the revenue    
   try {
 
     console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // creates an artificial delay of 1000ms by using a Promise instance
+    const data = await sql<Revenue[]>`SELECT * FROM revenue`; //gets everything from the revenue table. Returns an array that contains objects of type Revenue
 
     console.log('Data fetch completed after 1 seconds.');
 
@@ -29,18 +31,19 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
-  try {
-    const data = await sql<LatestInvoiceRaw[]>`
+  try { //gets the latest invoices
+    const data = await sql<LatestInvoiceRaw[]>` 
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
       LIMIT 5`;
 
-    const latestInvoices = data.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
+    const latestInvoices = data.map((invoice) => ({ //iterates over all the latest invoices and for each of them does something
+      ...invoice, //copies each invoice
+      amount: formatCurrency(invoice.amount), //for each copied invoice the amount is formatted in a nicer way
     }));
+
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
@@ -53,26 +56,26 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`; 
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const data = await Promise.all([
+    const data = await Promise.all([ //sends all the queries at once
       invoiceCountPromise,
       customerCountPromise,
       invoiceStatusPromise,
     ]);
 
-    const numberOfInvoices = Number(data[0][0].count ?? '0');
-    const numberOfCustomers = Number(data[1][0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
+    const numberOfInvoices = Number(data[0][0].count ?? '0'); //gets the number of invoices from the returned data of the queries 
+    const numberOfCustomers = Number(data[1][0].count ?? '0'); //gets the number of customers from the returned data of the queries
+    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0'); //gets the amount of paid invoices from the returned data of the queries  
+    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0'); //gets the amount of pending invoices from the returned date of the queries
 
     return {
-      numberOfCustomers,
+      numberOfCustomers, 
       numberOfInvoices,
       totalPaidInvoices,
       totalPendingInvoices,
@@ -157,7 +160,7 @@ export async function fetchInvoiceById(id: string) {
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
-
+    console.log(invoice)
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
