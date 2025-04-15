@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useActionState } from 'react';
 
@@ -15,6 +15,7 @@ import { createInvoice, State } from '@/app/lib/actions'; //imports the createIn
 
 export default function Form({ customers }: { customers: CustomerField[] }) { //this is the form component, it accepts a prop which is an array of of CustomerField objects
   const initialState: State = { message: null, errors: {} }
+
   const [state, formAction] = useActionState(createInvoice, initialState)
   return (
     <form action={formAction}> 
@@ -42,6 +43,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) { //
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
+          <div id="customer-error" aria-live="polite" aria-atomic="true">
+        {state.errors?.customerId &&
+          state.errors.customerId.map((error: string) => (
+            <p className="mt-2 text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
+      </div>
         </div>
 
         {/* Invoice Amount */}
@@ -62,6 +71,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) { //
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
+          <div id="customer-error" aria-live="polite" aria-atomic="true">
+        {state.errors?.amount &&
+          state.errors.amount.map((error: string) => (
+            <p className="mt-2 text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
+      </div>
         </div>
 
         {/* Invoice Status */}
@@ -103,6 +120,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) { //
               </div>
             </div>
           </div>
+              <div id="customer-error" aria-live="polite" aria-atomic="true">
+        {state.errors?.status &&
+          state.errors.status.map((error: string) => (
+            <p className="mt-2 text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
+      </div>
         </fieldset>
       </div>
       <div className="mt-6 flex justify-end gap-4">
@@ -117,3 +142,4 @@ export default function Form({ customers }: { customers: CustomerField[] }) { //
     </form>
   );
 }
+        
