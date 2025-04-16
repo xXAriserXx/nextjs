@@ -1,7 +1,6 @@
-'use client';
+'use client'; //this is a client component since I'm using the useActionState hook frmo react
 
-import { useActionState } from 'react';
-
+import { useActionState } from 'react'; //
 import { CustomerField } from '@/app/lib/definitions';  //imports the customer field interface I guess
 import Link from 'next/link'; // imports the link component, which is a built in component of next
 import { //imports some interfaces
@@ -14,12 +13,14 @@ import { Button } from '@/app/ui/button'; //imports a button icon
 import { createInvoice, State } from '@/app/lib/actions'; //imports the createInvoice Method
 
 export default function Form({ customers }: { customers: CustomerField[] }) { //this is the form component, it accepts a prop which is an array of of CustomerField objects
+  
   const initialState: State = { message: null, errors: {} }
-
   const [state, formAction] = useActionState(createInvoice, initialState)
+
   return (
-    <form action={formAction}> 
+    <form action={formAction}>  
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
+
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
@@ -120,14 +121,21 @@ export default function Form({ customers }: { customers: CustomerField[] }) { //
               </div>
             </div>
           </div>
-              <div id="customer-error" aria-live="polite" aria-atomic="true">
-        {state.errors?.status &&
-          state.errors.status.map((error: string) => (
+          <div id="customer-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.status &&
+            state.errors.status.map((error: string) => (
             <p className="mt-2 text-sm text-red-500" key={error}>
               {error}
             </p>
           ))}
-      </div>
+          </div>
+          {state.message && (
+            <p className='mt-4 text-sm text-red-500'>
+              {state.message}
+            </p>
+          )
+
+          }
         </fieldset>
       </div>
       <div className="mt-6 flex justify-end gap-4">
